@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datos del Arduino</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+    #data {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Datos del Arduino</h1>
+  <div id="data">Cargando...</div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const response = await fetch('http://192.168.1.116:5000/data');
+        const data = await response.json();
+        document.getElementById('data').textContent = data.data || 'Sin datos';
+      } catch (error) {
+        document.getElementById('data').textContent = 'Error al cargar datos';
+      }
+    }
+
+    // Actualizar los datos cada 2 segundos
+    setInterval(fetchData, 2000);
+
+    // Cargar datos inmediatamente al iniciar
+    fetchData();
+  </script>
+</body>
+</html>

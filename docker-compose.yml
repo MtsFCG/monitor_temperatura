@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"  # Asegúrate de que el puerto sea correcto
+    privileged: true  # Necesario para acceder al hardware
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"  # Puerto 8080 en la Raspberry Pi, puerto 80 dentro del contenedor
+    depends_on:
+      - backend
+    restart: unless-stopped
