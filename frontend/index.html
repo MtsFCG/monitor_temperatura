@@ -23,7 +23,7 @@
   <script>
     async function fetchData() {
       try {
-        const response = await fetch('http://192.168.1.116:5000/data');
+        const response = await fetch('/api/data');
         const data = await response.json();
         document.getElementById('data').textContent = data.data || 'Sin datos';
       } catch (error) {
