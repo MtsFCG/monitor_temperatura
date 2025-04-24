@@ -1,6 +1,11 @@
 # Usar una imagen base de Python ligera
 FROM python:3.9-slim
 
+# Instalar dependencias del sistema necesarias (udevadm)
+RUN apt-get update && apt-get install -y \
+    udev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Establecer el directorio de trabajo
 WORKDIR /app
 

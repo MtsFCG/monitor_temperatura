@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    devices:
-      - "/dev/ttyUSB0:/dev/ttyUSB0"  # Asegúrate de que el puerto sea correcto
+    devices:    
+      - "/dev:/dev"  # Monta todos los dispositivos del host en el contenedor
     privileged: true  # Necesario para acceder al hardware
     restart: unless-stopped
 
