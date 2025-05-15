@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import serial
 import threading
 from flask_cors import CORS
@@ -37,6 +37,7 @@ BAUD_RATE = 9600
 
 # Variable global para almacenar el último dato recibido
 last_data = None
+ser = None  # Variable global para acceder al puerto serial desde cualquier función
 
 def read_serial():
     global last_data
@@ -57,6 +58,26 @@ thread.start()
 def get_data():
     global last_data
     return jsonify({'data': last_data})
+
+@app.route('/setpoint', methods=['GET'])
+def set_setpoint():
+    global ser
+    temp = request.args.get('temp')
+    if temp:
+        try:
+            temp_float = float(temp)
+            if 10 <= temp_float <= 40:  # Validación de rango
+                if ser and ser.is_open:
+                    ser.write(f"SETPOINT {temp_float}\n".encode('utf-8'))
+                    return jsonify({"status": "ok", "message": f"Setpoint cambiado a {temp_float} °C"})
+                else:
+                    return jsonify({"status": "error", "message": "Puerto serial no está abierto"}), 500
+            else:
+                return jsonify({"status": "error", "message": "Temperatura fuera de rango (10 - 40)"}), 400
+        except ValueError:
+            return jsonify({"status": "error", "message": "Valor inválido. Debe ser un número."}), 400
+    else:
+        return jsonify({"status": "error", "message": "Falta el parámetro 'temp'"}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
